@@ -54,7 +54,7 @@ section {
 }
 
 header {
-  height: 60vh;
+  height: 90vh;
   max-height: 50vw;
   display: flex;
   flex-direction: column;
@@ -101,7 +101,7 @@ h2 span {
 }
 
 footer {
-  padding-top: max(2.5rem, 20vw);
+  /* padding-top: max(2.5rem, 20vw); */
 }
 
 .EffectsToggle {
@@ -156,6 +156,42 @@ footer {
   padding: 0;
 }
 
+.EffectsToggle2 {
+  position: sticky;
+  top: -1px; /* use to detect if pinned */
+  left: 50%;
+  margin-top: 10vh;
+  z-index: 1000;
+  height: 20vh;
+  font-size: 4rem;
+  text-align: center;
+  display: inline-block;
+  font-family: "IBM Plex Sans";
+  /* font-style: italic; */
+  letter-spacing: -0.03rem;
+  transform: translateX(-50%);
+}
+
+.EffectsToggle__Inner2 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: auto;
+  padding: 0.5rem 1.2rem;
+  margin-left: -1.2rem;
+  margin-top: 45vh;
+  border-radius: 2.5rem;
+  transition: background 0.2s ease;
+}
+.EffectsToggle2.is-pinned .EffectsToggle__Inner2 {
+  margin-top: 45vh;
+}
+
+.EffectsToggle__Text2{
+  display: block;
+  width: 10em;
+  font-family: "IBM Plex Sans", sans-serif;
+}
 h3 {
   font-family: "Playfair Display", sans-serif;
   font-weight: 400;
@@ -213,10 +249,18 @@ p {
   width: 47.5%;
 }
 
+
 .ParallaxContainer {
   display: flex;
-  margin: max(5rem, 300/1440 * 100vw) 0;
+  margin: 0;
+  height: 200vh;
+  padding-bottom: 50vh;
 }
+
+.bottom-header {
+  margin-top: 25vh
+}
+
 .aspect-16_11 {
   aspect-ratio: 16/11;
   width: 50%;

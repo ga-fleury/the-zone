@@ -1,10 +1,14 @@
 import React, { Suspense, useRef, useState } from "react";
-import { GlobalCanvas, SmoothScrollbar, useScrollbar } from "@14islands/r3f-scroll-rig";
+import {
+  GlobalCanvas,
+  SmoothScrollbar,
+  useScrollbar,
+} from "@14islands/r3f-scroll-rig";
 import { Environment, Loader, Plane } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { BodyCopy, Headline, Subtitle } from "./Text";
+import { BodyCopy, Headline, Subtitle, StickyHeadline } from "./Text";
 import { mapLinear, clamp } from "three/src/math/MathUtils";
-import { Image } from "./Image";
+import { Image, SubImage } from "./Image";
 import { ImageCube } from "./ImageCube";
 import { WebGLBackground, WebGLWobbleBackground } from "./WebGLBackground";
 import { Lens } from "./Lens";
@@ -19,10 +23,18 @@ function MeshPlane(props) {
 
   useFrame((_, delta) => {
     if (scroll.y < scroll.limit / 2) {
-      const scrollPositionY = clamp(mapLinear(scroll.y, 0, 1200, -20, 0), -20, 0);
+      const scrollPositionY = clamp(
+        mapLinear(scroll.y, 0, 1200, -20, 0),
+        -20,
+        0
+      );
       mesh.current.position.y = scrollPositionY;
     } else {
-      const scrollPositionY = clamp(mapLinear(scroll.y, scroll.limit - 1200, scroll.limit, 0, 20), 0, 20);
+      const scrollPositionY = clamp(
+        mapLinear(scroll.y, scroll.limit - 1000, scroll.limit, 0, 20),
+        0,
+        20
+      );
       mesh.current.position.y = scrollPositionY;
     }
   });
@@ -30,7 +42,16 @@ function MeshPlane(props) {
   return (
     <mesh ref={mesh}>
       <Plane args={[20, 20]}>
-        <meshStandardMaterial color="white" emissive="#7B00FF" flatShading={true}/>
+        {/* <meshStandardMaterial
+          color="white"
+          emissive="#7B00FF"
+          flatShading={true}
+        /> */}
+        <meshPhysicalMaterial
+          roughness="0.4"
+          transmission="0.5"
+          thickness="5"
+        />
       </Plane>
     </mesh>
   );
@@ -53,22 +74,22 @@ export default function App() {
         scaleMultiplier={0.01}
         // All other props on the R3F Canvas is supported:
         eventSource={eventSource}
-        eventPrefix='client'
+        eventPrefix="client"
         flat // disable toneMapping since we have editorial images
         camera={{ fov: 14 }}
         style={{ pointerEvents: "none", zIndex: -1 }}
       >
-        {globalChildren => (
+        {(globalChildren) => (
           <Lens>
             {enabled ? <WebGLWobbleBackground /> : <WebGLBackground />}
 
             <MeshPlane />
 
-            <Suspense fallback=''>
+            <Suspense fallback="">
               {/* 
                 Our materials use PBR ligting and requires an environment
               */}
-              <Environment files='https://auguri-webflow-react.s3.sa-east-1.amazonaws.com/env/empty_warehouse_01_1k.hdr' />
+              <Environment files="https://auguri-webflow-react.s3.sa-east-1.amazonaws.com/env/empty_warehouse_01_1k.hdr" />
               {globalChildren}
             </Suspense>
           </Lens>
@@ -79,81 +100,157 @@ export default function App() {
         config={{ syncTouch: true }} // Lenis setting to force smooth scroll on touch devices
       />
       <article>
-        <EffectsToggle setEnabled={setEnabled} enabled={enabled} />
-        <header className='container'>
-          <div className='headerLayout'>
+        {/* <EffectsToggle setEnabled={setEnabled} enabled={enabled} /> */}
+        <header className="container">
+          <div className="headerLayout">
             <h2>
-              <Headline wobble weight='light'>
-                WELCOME TO
+              <Headline wobble weight="lightitalic">
+                Welcome to
               </Headline>
-              <Headline wobble weight='medium'>
-                {enabled ? "THE ZONE" : "THE ZONE"}
+              <Headline wobble weight="medium">
+                {enabled ? "TheZone" : "THE ZONE"}
               </Headline>
             </h2>
-            <BodyCopy as='p' className='subline'>
-              Transforming Your Digital Marketing with Precision and Expertise
+            <BodyCopy as="p" className="subline">
+              Transforming Digital Marketing with Precision and Expertise
             </BodyCopy>
           </div>
         </header>
-        <section className='container'>
+        <section className="container">
           <h3>
-            <Subtitle>We use CSS to create a responsive layout.</Subtitle>
+            <Subtitle>
+              At The Zone, we specialize in performance marketing that drives
+              results.
+            </Subtitle>
             <em>
-              <Subtitle>A Canvas on top tracks DOM elements and enhance them with WebGL.</Subtitle>
+              <Subtitle>
+                let us help your business reach its full potential.
+              </Subtitle>
             </em>
           </h3>
           <p>
             <BodyCopy>
-              Try turning off WebGL using the button in the sticky header. You’ll notice smooth scrolling is disabled, and all scroll-bound
-              WebGL effects disappears.
+              Whether you're looking to increase brand awareness or boost
+              conversions, we're here to deliver tailored solutions that fit
+              your needs. We harness the latest analytics and insights to inform
+              our advertising decisions, ensuring maximum ROI for your
+              campaigns.
             </BodyCopy>
           </p>
         </section>
-        <section className=''>
+        <section className="container">
           <Image
-            src='https://cdn.prod.website-files.com/673d15b531aa3707093d102a/673d886ab78a48c06e5735a1_maxim-berg-1_U2RcHnSjc-unsplash.jpg'
-            className='ImageLandscape'
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ec2ba990573687c666d7_ion-fet-QRawWgV6gmo-unsplash.webp"
+            className="ImageLandscape"
           />
         </section>
-        <section className='ParallaxContainer'>
+        <section className="ParallaxContainer">
+          <StickyHeadline weight="medium">
+            A Team of Specialists <br />
+          </StickyHeadline>
+          <SubImage
+            style={{ maxHeight: "50vh", overflow: "show", left: "24%" }}
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ac8c978e011d8afd2e5b_Jonathan%20lk%20cover%201.webp"
+            className="testing"
+            parallaxSpeed={1.08}
+          ></SubImage>
+          <BodyCopy
+            style={{ position: "absolute", left: "25%", textAlign: "right" }}
+          >
+            Jonathan
+          </BodyCopy>
+          <BodyCopy
+            style={{ position: "absolute", left: "25%", textAlign: "right" }}
+          >
+            Marketing Manager
+          </BodyCopy>
           <Image
-            src='https://cdn.prod.website-files.com/673d15b531aa3707093d102a/673d886bd7c5130cebe3687f_maxim-berg-qsDfqZyTCAE-unsplash-crop.jpg'
-            className='aspect-9_13'
+            style={{
+              maxHeight: "50vh",
+              overflow: "show",
+              position: "absolute",
+            }}
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ac8c978e011d8afd2e5b_Jonathan%20lk%20cover%201.webp"
+            className=""
+            parallaxSpeed={1.08}
+          />
+          <BodyCopy>Jonathan - Marketing Manager</BodyCopy>
+          <Image
+            style={{
+              maxHeight: "50vh",
+              overflow: "show",
+              position: "absolute",
+              left: "50%",
+              marginTop: "100vh",
+            }}
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ac8d0168e4f90101c21f_Rozita%20cover%20lk%201.webp"
+            className=""
             parallaxSpeed={1.08}
           />
           <Image
-            src='https://cdn.prod.website-files.com/673d15b531aa3707093d102a/673d886bce54620949649596_maxim-berg-ANuuRuCRRAc-unsplash.jpg'
-            className='aspect-16_11'
-            parallaxSpeed={0.92}
+            style={{
+              maxHeight: "50vh",
+              overflow: "show",
+              position: "absolute",
+            }}
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ac8c219482368dc7ba13_Jamie.webp"
+            className=""
+            parallaxSpeed={1.08}
+          />
+          <Image
+            style={{ maxHeight: "30vh", overflow: "show" }}
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/6744ac8c82d647c40024c114_Luis.webp"
+            parallaxSpeed={1.2}
           />
         </section>
-        <section className='container'>
+        <section className="container" style={{}}>
           <h4>
             <BodyCopy>
-              Thanks to Threejs we can also render 3D geometry or models. The following image is replaced by a box. Try scrolling hard to
-              make it wiggle.
+              At TheZone we like to give things a new "twist". We believe a
+              fresh perspective is the key to success in a fast-paced and
+              ever-evolving market
             </BodyCopy>
           </h4>
         </section>
         <section>
           <ImageCube
-            src='https://cdn.prod.website-files.com/673d15b531aa3707093d102a/673d886a4a269f8ac742b999_maxim-berg-TcE45yIzJA0-unsplash.jpg'
-            className='JellyPlaceholder'
+            src="https://cdn.prod.website-files.com/673d15b531aa3707093d102a/674565ae6b16621417b56085_Holographic_7.webp"
+            className="JellyPlaceholder"
           />
         </section>
-        <section className='container'>
+        <section className="container">
           <h3>
             <Subtitle>Most websites use a mix of WebGL and HTML.</Subtitle>
             <em>
-              <Subtitle>However, the Lens refraction requires all images and text to be WebGL.</Subtitle>
+              <Subtitle>
+                However, the Lens refraction requires all images and text to be
+                WebGL.
+              </Subtitle>
             </em>
           </h3>
           <p>
-            <a href='https://github.com/14islands/r3f-scroll-rig'>
-              <BodyCopy>You can find the r3f-scroll-rig library on Github. Please use WebGL responsibly™.</BodyCopy>
+            <a href="https://github.com/14islands/r3f-scroll-rig">
+              <BodyCopy>
+                You can find the r3f-scroll-rig library on Github. Please use
+                WebGL responsibly™.
+              </BodyCopy>
             </a>
           </p>
         </section>
+        <header className="container bottom-header">
+          <div className="headerLayout">
+            <a href="mailto:info@thezone.ch">
+              <h2>
+                <Headline wobble weight="medium">
+                  DROP US
+                </Headline>
+                <Headline wobble weight="medium">
+                  A LINE
+                </Headline>
+              </h2>
+            </a>
+          </div>
+        </header>
         <footer>
           <CodropsFrame />
         </footer>
@@ -167,7 +264,12 @@ export default function App() {
           height: "100vh",
           position: "fixed",
         }}
-        innerStyles={{ background: "white", width: "100vw", height: "10px", color: "black" }}
+        innerStyles={{
+          background: "white",
+          width: "100vw",
+          height: "10px",
+          color: "black",
+        }}
         barStyles={{ background: "#6e6bcd", height: "100%" }}
         dataStyles={{ color: "#c3c4c7", fontSize: "20px" }}
       />

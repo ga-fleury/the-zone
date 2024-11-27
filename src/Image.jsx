@@ -1,4 +1,4 @@
-import React, { useRef, Suspense } from "react";
+import React, { useRef, Suspense, Children } from "react";
 import {
   UseCanvas,
   useScrollRig,
@@ -10,6 +10,8 @@ import { Image as DreiImage, Circle } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { clamp } from "three/src/math/MathUtils";
 import { DoubleSide } from "three";
+import { MeshDistortMaterial } from "@react-three/drei";
+import { WebGLText } from "@14islands/r3f-scroll-rig/powerups";
 
 export function Image({ src, parallaxSpeed = 1, ...props }) {
   const el = useRef();
@@ -43,6 +45,58 @@ export function Image({ src, parallaxSpeed = 1, ...props }) {
   );
 }
 
+export function SubImage({ className, children, src, parallaxSpeed = 1, ...props }) {
+  const el = useRef();
+  const img = useRef();
+  const { hasSmoothScrollbar } = useScrollRig();
+  return (
+    <>
+      <div ref={el} {...props}>
+        <img
+          className={styles.hiddenWhenSmooth}
+          ref={img}
+          src={src}
+          loading="eager"
+          decode="async"
+          alt="This will be loaded as a texture"
+        />
+        <span
+        className={styles.transparentColorWhenSmooth + " " + className}
+        {...props}
+        >
+          {children}
+        </span>
+      </div>
+      <div className="subimage">
+        {hasSmoothScrollbar && (
+          <>
+            <UseCanvas debug={false}>
+              <ParallaxScrollScene track={el} speed={parallaxSpeed}>
+                {(props) => (
+                  <>
+                    <Suspense fallback={<LoadingIndicator {...props} />}>
+                      <WebGLImage imgRef={img} {...props} />
+                    </Suspense>
+                    <WebGLText
+                      el={el} // getComputedStyle is called on this element
+                      font="https://auguri-webflow-react.s3.sa-east-1.amazonaws.com/fonts/Poppins-Regular.woff"
+                      glyphGeometryDetail={16} // needed for distortion to work
+                      {...props} // contains scale from the ScrollScene
+                    >
+                      <MeshDistortMaterial speed={1.4} distort={0.1} />
+                      {children}
+                    </WebGLText>
+                  </>
+                )}
+              </ParallaxScrollScene>
+            </UseCanvas>
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
 function WebGLImage({ imgRef, scrollState, dir, ...props }) {
   const ref = useRef();
 
@@ -57,7 +111,7 @@ function WebGLImage({ imgRef, scrollState, dir, ...props }) {
       1
     );
     // scrollState.progress is 0 when image enters viewport at bottom and 1 when image left the viewport at the top
-    ref.current.material.zoom = 1 + scrollState.progress * 0.66;
+    // ref.current.material.zoom = 1 + scrollState.progress * 0.66;
     // scrollState.viewport is 0 when image enters viewport at bottom and 1 when image reached top of viewport
     ref.current.material.opacity = clamp(scrollState.viewport * 3, 0, 1);
   });

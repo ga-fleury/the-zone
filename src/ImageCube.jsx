@@ -50,12 +50,12 @@ function WebGLCube({ img, scale, inViewport }) {
     <a.mesh ref={mesh} {...spring}>
       <boxGeometry args={[1, 1, 0.5, 64, 64]} />
       <MeshWobbleMaterial
-        factor={0}
+        factor={1}
         speed={1}
         color="#fff"
         map={texture}
-        roughness={12}
-        metalness={0}
+        roughness={0.1}
+        metalness={0.1}
         // render on top of the webgl background plane which is also transparent
         transparent
         depthTest={false}

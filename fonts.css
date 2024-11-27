@@ -26,3 +26,11 @@
   font-display: swap;
   src: url("fonts/Poppins-SemiBold.woff") format("woff");
 }
+
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: medium;
+  font-weight: 600;
+  font-display: swap;
+  src: url(https://auguri-webflow-react.s3.sa-east-1.amazonaws.com/fonts/IBMPlexSans-Medium.ttf) format("ttf");
+}
